@@ -346,6 +346,78 @@ export function handleLogout(_req: IncomingMessage, res: ServerResponse): void {
 }
 
 /**
+ * Token-login endpoint: accept a refresh token (from the Electron app),
+ * exchange it for access/refresh/id tokens, create a session, and redirect to /.
+ * This bypasses the OAuth redirect flow entirely — the Electron app already has
+ * a valid Azure AD refresh token from the Glean auth flow (same client ID + tenant).
+ */
+export async function handleTokenLogin(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const url = new URL(req.url ?? "", `http://${req.headers.host}`);
+  const refreshToken = url.searchParams.get("refresh_token");
+
+  if (!refreshToken) {
+    sendHtml(
+      res,
+      "<h2>Missing refresh token</h2><p>No refresh_token query parameter provided.</p>",
+    );
+    return;
+  }
+
+  try {
+    const tokenRes = await fetch(tokenEndpoint(), {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        client_id: AZURE_AD_CONFIG.clientId,
+        ...(AZURE_AD_CONFIG.clientSecret ? { client_secret: AZURE_AD_CONFIG.clientSecret } : {}),
+        refresh_token: refreshToken,
+        scope: AZURE_AD_CONFIG.scope,
+      }),
+    });
+
+    if (!tokenRes.ok) {
+      const errBody = await tokenRes.text();
+      sendHtml(
+        res,
+        `<h2>Token exchange failed</h2><pre>${errBody}</pre><p><a href="/azure-ad/login">Login manually</a></p>`,
+      );
+      return;
+    }
+
+    const data = (await tokenRes.json()) as Record<string, unknown>;
+    const expiresIn = typeof data.expires_in === "number" ? data.expires_in : 3600;
+
+    // Decode email from id_token
+    let email: string | undefined;
+    try {
+      const idToken = String(data.id_token ?? "");
+      const payload = JSON.parse(Buffer.from(idToken.split(".")[1] ?? "", "base64url").toString());
+      email = payload.preferred_username ?? payload.email ?? payload.sub;
+    } catch {
+      // ignore
+    }
+
+    currentTokens = {
+      accessToken: String(data.access_token ?? ""),
+      refreshToken: typeof data.refresh_token === "string" ? data.refresh_token : refreshToken,
+      idToken: typeof data.id_token === "string" ? data.id_token : undefined,
+      expiresAt: Date.now() + expiresIn * 1000,
+      email,
+    };
+
+    scheduleTokenRefresh();
+    setSessionCookie(res);
+    sendRedirect(res, "/");
+  } catch (err) {
+    sendHtml(
+      res,
+      `<h2>Token login error</h2><pre>${String(err)}</pre><p><a href="/azure-ad/login">Login manually</a></p>`,
+    );
+  }
+}
+
+/**
  * Auth gate: redirect unauthenticated browser requests to Azure AD login.
  * Returns false (pass-through) for auth routes, API calls, WebSocket upgrades,
  * and non-browser requests. Returns true (handled) when redirecting.

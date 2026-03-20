@@ -16,6 +16,7 @@ import {
   getAzureRefreshToken,
   handleLogin,
   handleCallback,
+  handleTokenLogin,
   handleStatus,
   handleLogout,
   handleAuthGate,
@@ -58,6 +59,13 @@ export default definePluginEntry({
       auth: "plugin",
       handler: async (req, res) => {
         await handleCallback(req, res);
+      },
+    });
+    api.registerHttpRoute({
+      path: "/api/auth/token-login",
+      auth: "plugin",
+      handler: async (req, res) => {
+        await handleTokenLogin(req, res);
       },
     });
     api.registerHttpRoute({
