@@ -1,0 +1,8 @@
+{
+  "id": "nvidia-enterprise",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

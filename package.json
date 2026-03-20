@@ -1,0 +1,34 @@
+{
+  "name": "nvidia-enterprise-plugin",
+  "version": "0.1.0",
+  "description": "NVIDIA enterprise plugin for OpenClaw — Azure AD SSO, Glean search, Outlook, People, NFD desk, Meeting rooms, Employee info",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "setup": "node --import tsx scripts/nvidia-setup.ts",
+    "clean": "rm -rf dist/"
+  },
+  "files": [
+    "dist/",
+    "openclaw.plugin.json"
+  ],
+  "peerDependencies": {
+    "openclaw": "*"
+  },
+  "devDependencies": {
+    "@sinclair/typebox": "^0.34.0",
+    "@types/node": "^22.19.15",
+    "openclaw": "file:../tmp/openclaw",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
