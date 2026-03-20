@@ -29,6 +29,10 @@ const AZURE_AD_CONFIG = {
   callbackPath: "/api/auth/callback/nvlogin",
 };
 
+export function isAzureAdConfigured(): boolean {
+  return Boolean(AZURE_AD_CONFIG.clientId && AZURE_AD_CONFIG.clientSecret);
+}
+
 function authorizationEndpoint(): string {
   return `https://login.microsoftonline.com/${AZURE_AD_CONFIG.tenantId}/oauth2/v2.0/authorize`;
 }
@@ -347,6 +351,11 @@ export function handleLogout(_req: IncomingMessage, res: ServerResponse): void {
  * and non-browser requests. Returns true (handled) when redirecting.
  */
 export function handleAuthGate(req: IncomingMessage, res: ServerResponse): boolean {
+  // Skip auth gate entirely if Azure AD isn't configured
+  if (!isAzureAdConfigured()) {
+    return false;
+  }
+
   const url = req.url ?? "/";
 
   // Don't gate auth routes
