@@ -12,8 +12,8 @@
     ]
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "npx tsc",
+    "dev": "npx tsc --watch",
     "setup": "node --import tsx scripts/nvidia-setup.ts",
     "clean": "rm -rf dist/"
   },
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@sinclair/typebox": "^0.34.0",
     "@types/node": "^22.19.15",
-    "openclaw": "file:../tmp/openclaw",
+    "openclaw": "*",
     "tsx": "^4.0.0",
     "typescript": "^5.4.0"
   }
