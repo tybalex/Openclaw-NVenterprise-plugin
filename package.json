@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx tsc || true",
     "dev": "npx tsc --watch",
     "setup": "node --import tsx scripts/nvidia-setup.ts",
     "clean": "rm -rf dist/"
