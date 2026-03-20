@@ -27,12 +27,47 @@ cd ~/openclaw
 pnpm openclaw plugins install ~/Openclaw-NVenterprise-plugin --link
 
 # 3. Run setup (writes ~/.openclaw/openclaw.json)
-cd ~/Openclaw-NVenterprise-plugin && pnpm setup
+cd ~/Openclaw-NVenterprise-plugin && pnpm nvidia:setup
 
 # 4. Set env vars and run
 export NVIDIA_API_KEY="..."
 cd ~/openclaw && pnpm openclaw gateway run
 ```
+
+### Setup Options
+
+The setup script accepts flags to customize the config:
+
+```bash
+# Default: port 3000, auth none
+pnpm nvidia:setup
+
+# Custom port
+pnpm nvidia:setup -- --port 8080
+
+# Custom auth mode (none, token, password, trusted-proxy)
+pnpm nvidia:setup -- --auth token
+
+# Both
+pnpm nvidia:setup -- --port 8080 --auth token
+```
+
+You can also run setup directly without cloning:
+
+```bash
+npx tsx https://raw.githubusercontent.com/tybalex/Openclaw-NVenterprise-plugin/main/scripts/nvidia-setup.ts
+```
+
+### Minimal Setup (model only, no enterprise tools)
+
+If you just need the NVIDIA model provider without Azure AD or enterprise tools:
+
+```bash
+export NVIDIA_API_KEY="your-key"
+cd ~/openclaw && pnpm openclaw gateway run
+```
+
+The plugin skips the Azure AD login gate and enterprise tools when their env vars aren't configured.
 
 ## Environment Variables
 
@@ -156,5 +191,5 @@ cd ~/openclaw && pnpm openclaw gateway run
 pnpm install
 pnpm build        # compile TypeScript
 pnpm dev          # watch mode
-pnpm setup        # write NVIDIA config to ~/.openclaw/openclaw.json
+pnpm nvidia:setup        # write NVIDIA config to ~/.openclaw/openclaw.json
 ```
