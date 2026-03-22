@@ -6,7 +6,13 @@
  * to authenticate via Azure AD.
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { definePluginEntry, type AnyAgentTool } from "openclaw/plugin-sdk/core";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const FAVICON_PATH = path.join(__dirname, "..", "assets", "favicon.svg");
 import { createEmployeeInfoTool } from "./src/employee-info.js";
 import { createGleanSearchTool } from "./src/glean-search.js";
 import { createMeetingRoomTool } from "./src/meeting-room.js";
@@ -35,7 +41,28 @@ export default definePluginEntry({
     "NVIDIA enterprise tools + Azure AD SSO for Outlook, People, NFD, Meeting rooms, Glean, Employee info",
   register(api) {
     // -------------------------------------------------------------------------
-    // 1. Auth gate: redirect unauthenticated browser requests to Azure AD
+    // 1. Custom favicon (overrides stock OpenClaw favicon)
+    // -------------------------------------------------------------------------
+    let faviconCache: Buffer | null = null;
+    api.registerHttpRoute({
+      path: "/favicon.svg",
+      auth: "plugin",
+      handler: (req, res) => {
+        try {
+          if (!faviconCache) {
+            faviconCache = fs.readFileSync(FAVICON_PATH);
+          }
+          res.writeHead(200, { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=3600" });
+          res.end(faviconCache);
+          return true;
+        } catch {
+          return false; // fall through to stock favicon
+        }
+      },
+    });
+
+    // -------------------------------------------------------------------------
+    // 2. Auth gate: redirect unauthenticated browser requests to Azure AD
     // -------------------------------------------------------------------------
     api.registerHttpRoute({
       path: "/",
