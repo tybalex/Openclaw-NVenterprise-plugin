@@ -27,8 +27,10 @@ import {
   handleLogout,
   handleAuthGate,
 } from "./src/oidc.js";
+import { createOutlookCalendarTool } from "./src/outlook-calendar.js";
 import { createOutlookEmailTool } from "./src/outlook-email.js";
 import { createPeopleSearchTool } from "./src/people-search.js";
+import { createTeamsChatTool } from "./src/teams-chat.js";
 
 // =============================================================================
 // Plugin Entry
@@ -38,7 +40,7 @@ export default definePluginEntry({
   id: "nvidia-enterprise",
   name: "NVIDIA Enterprise Plugin",
   description:
-    "NVIDIA enterprise tools + Azure AD SSO for Outlook, People, NFD, Meeting rooms, Glean, Employee info",
+    "NVIDIA enterprise tools + Azure AD SSO for Outlook, Calendar, Teams, People, NFD, Meeting rooms, Glean, Employee info",
   register(api) {
     // -------------------------------------------------------------------------
     // 1. Custom favicon (overrides stock OpenClaw favicon)
@@ -117,6 +119,8 @@ export default definePluginEntry({
       createGleanSearchTool({ getSSOToken }),
       createPeopleSearchTool({ getRefreshToken: getAzureRefreshToken }),
       createOutlookEmailTool({ getRefreshToken: getAzureRefreshToken }),
+      createOutlookCalendarTool({ getRefreshToken: getAzureRefreshToken }),
+      createTeamsChatTool({ getRefreshToken: getAzureRefreshToken }),
       createNfdDeskTool({ getRefreshToken: getAzureRefreshToken }),
       createMeetingRoomTool({ getRefreshToken: getAzureRefreshToken }),
       createEmployeeInfoTool(),
