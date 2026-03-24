@@ -17,6 +17,7 @@ import { createEmployeeInfoTool } from "./src/employee-info.js";
 import { createGleanSearchTool } from "./src/glean-search.js";
 import { createMeetingRoomTool } from "./src/meeting-room.js";
 import { createNfdDeskTool } from "./src/nfd-desk.js";
+import { createOneDriveTool } from "./src/onedrive.js";
 import {
   getSSOToken,
   getAzureRefreshToken,
@@ -31,6 +32,7 @@ import { createOutlookAvailabilityTool } from "./src/outlook-availability.js";
 import { createOutlookCalendarTool } from "./src/outlook-calendar.js";
 import { createOutlookEmailTool } from "./src/outlook-email.js";
 import { createPeopleSearchTool } from "./src/people-search.js";
+import { createTodoSyncTool } from "./src/todo-sync.js";
 import { createTeamsChatTool } from "./src/teams-chat.js";
 
 // =============================================================================
@@ -123,6 +125,8 @@ export default definePluginEntry({
       createOutlookCalendarTool({ getRefreshToken: getAzureRefreshToken }),
       createOutlookAvailabilityTool({ getRefreshToken: getAzureRefreshToken }),
       createTeamsChatTool({ getRefreshToken: getAzureRefreshToken }),
+      createOneDriveTool({ getRefreshToken: getAzureRefreshToken }),
+      createTodoSyncTool({ getRefreshToken: getAzureRefreshToken }),
       createNfdDeskTool({ getRefreshToken: getAzureRefreshToken }),
       createMeetingRoomTool({ getRefreshToken: getAzureRefreshToken }),
       createEmployeeInfoTool(),
