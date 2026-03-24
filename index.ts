@@ -27,6 +27,7 @@ import {
   handleLogout,
   handleAuthGate,
 } from "./src/oidc.js";
+import { createOutlookAvailabilityTool } from "./src/outlook-availability.js";
 import { createOutlookCalendarTool } from "./src/outlook-calendar.js";
 import { createOutlookEmailTool } from "./src/outlook-email.js";
 import { createPeopleSearchTool } from "./src/people-search.js";
@@ -120,6 +121,7 @@ export default definePluginEntry({
       createPeopleSearchTool({ getRefreshToken: getAzureRefreshToken }),
       createOutlookEmailTool({ getRefreshToken: getAzureRefreshToken }),
       createOutlookCalendarTool({ getRefreshToken: getAzureRefreshToken }),
+      createOutlookAvailabilityTool({ getRefreshToken: getAzureRefreshToken }),
       createTeamsChatTool({ getRefreshToken: getAzureRefreshToken }),
       createNfdDeskTool({ getRefreshToken: getAzureRefreshToken }),
       createMeetingRoomTool({ getRefreshToken: getAzureRefreshToken }),
