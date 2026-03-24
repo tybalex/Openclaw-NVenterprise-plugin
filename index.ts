@@ -16,6 +16,7 @@ const FAVICON_PATH = path.join(__dirname, "..", "assets", "favicon.svg");
 import { createEmployeeInfoTool } from "./src/employee-info.js";
 import { createGleanSearchTool } from "./src/glean-search.js";
 import { createMeetingRoomTool } from "./src/meeting-room.js";
+import { createMSCopilotTool } from "./src/ms-copilot.js";
 import { createNfdDeskTool } from "./src/nfd-desk.js";
 import { createOneDriveTool } from "./src/onedrive.js";
 import {
@@ -127,6 +128,7 @@ export default definePluginEntry({
       createTeamsChatTool({ getRefreshToken: getAzureRefreshToken }),
       createOneDriveTool({ getRefreshToken: getAzureRefreshToken }),
       createTodoSyncTool({ getRefreshToken: getAzureRefreshToken }),
+      createMSCopilotTool({ getRefreshToken: getAzureRefreshToken }),
       createNfdDeskTool({ getRefreshToken: getAzureRefreshToken }),
       createMeetingRoomTool({ getRefreshToken: getAzureRefreshToken }),
       createEmployeeInfoTool(),
